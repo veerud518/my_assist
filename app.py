@@ -22,7 +22,7 @@ def get_name():
     else:
         say("Please say your name sir")
         name = takeCommand()
-        if "sorry" in name:
+        if "sorry" in name.lower():
             while "sorry" in name:
                 say("I couldnt get your name please repeat")
                 name = takeCommand()
@@ -31,27 +31,17 @@ def get_name():
                 f.write(name)
     return name
 
-def get_google_description(query):
-    search_url = f"https://www.google.com/search?q={query}"
+def get_wikipedia_summary(query):
+    wikipedia_api_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{query}"
 
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
-    }
+    response = requests.get(wikipedia_api_url)
 
-    response = requests.get(search_url, headers=headers)
+    if response.status_code != 200:
+        return "Failed to fetch data."
 
-    soup = BeautifulSoup(response.text, 'html.parser')
+    data = response.json()
 
-    description_header = soup.find('h3', class_='bNg8Rb OhScic zsYMMe BBwThe', string='Description')
-    if description_header:
-
-        description_span = description_header.find_next('span')
-
-        if description_span:
-            return description_span.get_text()
-
-    return "Description not found."
-
+    return data.get("extract", "Description not found.")
 
 def get_query(query, excluded_words):
     words = query.split(' ')
@@ -131,7 +121,7 @@ def my_assist():
             say(f"Googling about {search_query}")
             url = f"https://www.google.com/search?q={search_query}"
             webbrowser.open(url)
-            say(get_google_description(search_query))
+            say(get_wikipedia_summary(search_query))
 
         elif "unmute".lower() in query.lower() or "un mute".lower() in query.lower():
             devices = AudioUtilities.GetSpeakers()
