@@ -3,10 +3,8 @@ import os
 import webbrowser
 import datetime
 import pygame
-import configparser
 from gtts import gTTS
 import requests
-from bs4 import BeautifulSoup
 import re
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
@@ -99,7 +97,6 @@ def my_assist():
     name = get_name()
     print('Welcome to MY ASSIST A.I')
     say(f" hi {name} how are you i am MY ASSIST A.I")
-    musicpath = "C:/Users/path_to_music"
     while True:
         print("Listening...")
         query = takeCommand()
